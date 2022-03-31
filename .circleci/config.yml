@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run: 
           name: Install reqd packages
-          command: sudo apt-get update && sudo apt-get install libc
+          command: sudo apt-get update && sudo apt-get install glibc6
       - run:
           name: Grab and install cc65
           command: mkdir tools/cc65 && cd tools/cc65 && wget https://gde-files.nes.science/cc65-2.19-linux.zip && unzip cc65-2.19-linux.zip
