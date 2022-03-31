@@ -2,15 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/base:2022.03
+      - image: cimg/node:17.8.0
     steps:
       - checkout
       - run: 
-          name: Install reqd packages
-          command: sudo apt-get update && sudo apt-get install libc6 nodejs npm
-      - run:
-          name: Grab and install cc65
-          command: mkdir tools/cc65 && cd tools/cc65 && wget https://gde-files.nes.science/cc65-2.19-linux.zip && unzip cc65-2.19-linux.zip
+          name: Install cc65, manually
+          command: mkdir tools/cc65 && cd tools/cc65 && wget https://github.com/cc65/cc65/archive/refs/tags/V2.19.tar.gz && tar xvzf V2.19.tar.gz && make && make install
       - run:
           name: "Npm installs"
           command: "cd tools/tmx2c/src && npm install && cd ../../../tools/sprite_def2img/src && npm install && cd ../../../tools/chr2img/src && npm install"
