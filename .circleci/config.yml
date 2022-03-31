@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: base/2022.03
+      - image: cimg/base:2022.03
     steps:
       - checkout
       - run: 
