@@ -1,5 +1,5 @@
 
-extern const unsigned char creditsScreenData[];
+extern unsigned char creditsScreenData[];
 
 // Draw a screen that says "you won!"
 void draw_win_screen();
