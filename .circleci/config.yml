@@ -2,12 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/node:17.8.0
+      - image: base/2022.03
     steps:
       - checkout
       - run: 
           name: Install reqd packages
-          command: sudo apt-get update && sudo apt-get install libc6
+          command: sudo apt-get update && sudo apt-get install libc6 nodejs
       - run:
           name: Grab and install cc65
           command: mkdir tools/cc65 && cd tools/cc65 && wget https://gde-files.nes.science/cc65-2.19-linux.zip && unzip cc65-2.19-linux.zip
