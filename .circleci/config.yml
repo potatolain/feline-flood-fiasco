@@ -2,12 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cppchriscpp/cc65-node:latest
+      - image: cimg/node
     steps:
       - checkout
       - run:
-          name: Move tools folder to expected location
-          command: cp -rf /tools .
+          name: Grab and install cc65
+          command: mkdir tools/cc65 && cd tools/cc65 && wget https://gde-files.nes.science/cc65-2.19-linux.zip && unzip cc65-2.19-linux.zip
       - run:
           name: "Npm installs"
           command: "cd tools/tmx2c/src && npm install && cd ../../../tools/sprite_def2img/src && npm install && cd ../../../tools/chr2img/src && npm install"
