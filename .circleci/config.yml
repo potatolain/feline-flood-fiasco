@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run: 
           name: Install cc65, manually
-          command: mkdir tools/temp && cd tools/temp && wget https://github.com/cc65/cc65/archive/refs/tags/V2.19.tar.gz && tar xvzf V2.19.tar.gz && mv ./cc65-2.19 ../cc65 && cd ../cc65 && make && make install
+          command: mkdir tools/temp && cd tools/temp && wget https://github.com/cc65/cc65/archive/refs/tags/V2.19.tar.gz && tar xvzf V2.19.tar.gz && mv ./cc65-2.19 ../cc65 && cd ../cc65 && make
       - run:
           name: "Npm installs"
           command: "cd tools/tmx2c/src && npm install && cd ../../../tools/sprite_def2img/src && npm install && cd ../../../tools/chr2img/src && npm install"
