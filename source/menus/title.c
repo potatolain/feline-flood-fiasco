@@ -19,7 +19,7 @@ void draw_title_screen() {
 	oam_clear();
 
 	vram_adr(0x2000);
-	vram_write(&titleScreenData[0], 0x400);
+	vram_write(&(titleScreenData[0]), 0x400);
     
 
 	ppu_on_all();
