@@ -32,12 +32,15 @@ void draw_hud() {
 
     set_vram_update(NULL);
 
+    // I don't want to show game name. 'cuz I said so.
+    /*
     vram_adr(NAMETABLE_A + HUD_POSITION_START + 0x22);
     for (i = 0; i != 0x1c; ++i) {
         vram_put(gameName[i] + 0x60);
     }
+    */
     if (enableLevelShow) {
-        vram_adr(NAMETABLE_A + HUD_POSITION_START + 0x82);
+        vram_adr(NAMETABLE_A + HUD_POSITION_START + 0x90);
         vram_put('L' + 0x60);
         vram_put('e' + 0x60);
         vram_put('v' + 0x60);
@@ -49,6 +52,9 @@ void draw_hud() {
         vram_adr(NAMETABLE_A + HUD_POSITION_START + 0x62);
         vram_put(0xf8);
     }
+    // Cat
+    vram_adr(NAMETABLE_A + HUD_POSITION_START + 0x82);
+    vram_put(0xe8);
 }
 
 // Draw a number to "screenBuffer". Isolated so we do the /10 and %10 in one spot
@@ -75,6 +81,8 @@ void update_hud() {
             }
             tempTileId = (tempTileIndex < 8) ? (tempTileIndex << 1) : (((tempTileIndex - 8) << 1) + 32);
             i = 0;
+            // Hide all of the updating for the current gamestyle's tile type. I made a smaller icon I like better
+            /*
             screenBuffer[i] = MSB(NAMETABLE_A + HUD_HEART_START) | NT_UPD_HORZ;
             ++i;
             screenBuffer[i] = LSB(NAMETABLE_A + HUD_HEART_START);
@@ -95,12 +103,15 @@ void update_hud() {
             ++i;
             screenBuffer[i] = tempTileId+17;
             ++i;
+            
             screenBuffer[i] = MSB(NAMETABLE_A + 0x03f5);
             ++i;
             screenBuffer[i++] = LSB(NAMETABLE_A + 0x03f5);
+            
             screenBuffer[i++] = (tilePalettes[tempTileIndex] << 6) | 0x3f;
-            screenBuffer[i++] = MSB(NAMETABLE_A + HUD_HEART_START + 62) | NT_UPD_HORZ;
-            screenBuffer[i++] = LSB(NAMETABLE_A + HUD_HEART_START + 62);
+            */
+            screenBuffer[i++] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x83) | NT_UPD_HORZ;
+            screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x83);
             screenBuffer[i++] = 5;
             draw_num_to_sb(playerCollectableCount);
             screenBuffer[i++] = '/' + 0x60;
@@ -143,8 +154,8 @@ void update_hud() {
     }
 
     if (enableLevelShow) {
-        screenBuffer[i++] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x89) | NT_UPD_HORZ;
-        screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x89);
+        screenBuffer[i++] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x97) | NT_UPD_HORZ;
+        screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x97);
         screenBuffer[i++] = 5;
         draw_num_to_sb(currentLevelId + 1);
         screenBuffer[i++] = '/' + 0x60;

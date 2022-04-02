@@ -133,7 +133,4 @@ run:
 space_check:
 	$(SPACE_CHECKER) rom/$(ROM_NAME)-patched.nes
 
-lips:
-	echo "$(LATEST_IPS)"
-
 FORCE: ;
