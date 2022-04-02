@@ -9,8 +9,6 @@
 #pragma code-name ("CODE")
 #pragma rodata-name ("CODE")
 
-#define selectedOption tempChara
-
 // Draws custom data from the patched area onto the screen, then moves on.
 void draw_title_screen() {
 	set_vram_update(NULL);

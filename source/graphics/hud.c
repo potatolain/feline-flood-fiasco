@@ -53,8 +53,10 @@ void draw_hud() {
 
 // Draw a number to "screenBuffer". Isolated so we do the /10 and %10 in one spot
 void draw_num_to_sb(unsigned char num) {
-    screenBuffer[i++] = (num / 10) + '0' + 0x60;
-    screenBuffer[i++] = (num % 10) + '0' + 0x60;
+    screenBuffer[i] = (num / 10) + '0' + 0x60;
+    ++i;
+    screenBuffer[i] = (num % 10) + '0' + 0x60;
+    ++i;
 
 }
 
@@ -73,17 +75,28 @@ void update_hud() {
             }
             tempTileId = (tempTileIndex < 8) ? (tempTileIndex << 1) : (((tempTileIndex - 8) << 1) + 32);
             i = 0;
-            screenBuffer[i++] = MSB(NAMETABLE_A + HUD_HEART_START) | NT_UPD_HORZ;
-            screenBuffer[i++] = LSB(NAMETABLE_A + HUD_HEART_START);
-            screenBuffer[i++] = 2;
-            screenBuffer[i++] = tempTileId;
-            screenBuffer[i++] = tempTileId+1;
-            screenBuffer[i++] = MSB(NAMETABLE_A + HUD_HEART_START + 32) | NT_UPD_HORZ;
-            screenBuffer[i++] = LSB(NAMETABLE_A + HUD_HEART_START + 32);
-            screenBuffer[i++] = 2;
-            screenBuffer[i++] = tempTileId+16;
-            screenBuffer[i++] = tempTileId+17;
-            screenBuffer[i++] = MSB(NAMETABLE_A + 0x03f5);
+            screenBuffer[i] = MSB(NAMETABLE_A + HUD_HEART_START) | NT_UPD_HORZ;
+            ++i;
+            screenBuffer[i] = LSB(NAMETABLE_A + HUD_HEART_START);
+            ++i;
+            screenBuffer[i] = 2;
+            ++i;
+            screenBuffer[i] = tempTileId;
+            ++i;
+            screenBuffer[i] = tempTileId+1;
+            ++i;
+            screenBuffer[i] = MSB(NAMETABLE_A + HUD_HEART_START + 32) | NT_UPD_HORZ;
+            ++i;
+            screenBuffer[i] = LSB(NAMETABLE_A + HUD_HEART_START + 32);
+            ++i;
+            screenBuffer[i] = 2;
+            ++i;
+            screenBuffer[i] = tempTileId+16;
+            ++i;
+            screenBuffer[i] = tempTileId+17;
+            ++i;
+            screenBuffer[i] = MSB(NAMETABLE_A + 0x03f5);
+            ++i;
             screenBuffer[i++] = LSB(NAMETABLE_A + 0x03f5);
             screenBuffer[i++] = (tilePalettes[tempTileIndex] << 6) | 0x3f;
             screenBuffer[i++] = MSB(NAMETABLE_A + HUD_HEART_START + 62) | NT_UPD_HORZ;
@@ -94,6 +107,9 @@ void update_hud() {
             draw_num_to_sb(totalCollectableCount);
 
             break;
+        
+        // NOTE: Crate mode removed to buy space for water logic
+            /*
         case GAME_STYLE_CRATES:
             for (j = 0; j != 16; ++j) {
                 if (tileCollisionTypes[j] == TILE_COLLISION_CRATE) {
@@ -123,7 +139,7 @@ void update_hud() {
             screenBuffer[i++] = '/' + 0x60;
             draw_num_to_sb(totalCrateCount);
 
-            break;
+            break;*/
     }
 
     if (enableLevelShow) {

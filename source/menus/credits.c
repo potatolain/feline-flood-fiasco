@@ -47,10 +47,13 @@ void draw_win_screen() {
             put_str(NTADR_A(5, 22), coinsCollectedText);
             tempInt1 = gameCollectableCount;
             break;
+        // NOTE: Removed for space concerns
+            /*
         case GAME_STYLE_CRATES:
             put_str(NTADR_A(5, 22), cratesRemovedText);
             tempInt1 = gameCrates;
             break;
+            */
     }
     // NOTE: If there are space issues, we might benefit from incrementing these 
     // "smartly" and replacing this with & 0x0f, &0xf0, (>>8)& 0x0f, etc

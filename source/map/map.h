@@ -45,3 +45,16 @@ extern const unsigned char singleLevelOverride;
 #define GAME_STYLE_CRATES 1
 #define GAME_STYLE_COIN 2
 #define GAME_STYLE_COUNT 3
+
+// Track the water height throughout the level
+extern unsigned char floodMap[120];
+ZEROPAGE_EXTERN(unsigned char, waterLevel);
+ZEROPAGE_EXTERN(unsigned char, maxWaterLevel);
+
+// New unique tiles for the water mechanic
+#define WATER_TILE 15
+#define GRATE_TILE 9
+#define CAT_TILE 8
+
+void flood_map(void);
+void update_flooded_tiles(void);

@@ -21,13 +21,14 @@
 // Constants for sound effects we play in the game
 #define SFX_HURT 0
 #define SFX_HEART 1
-#define SFX_KEY 2
+#define SFX_CAT_OHNO 2
 #define SFX_GAMEOVER 3
 #define SFX_WIN 4
-#define SFX_PLACE_ITEM 5
+#define SFX_WATER_SPREAD 5
 #define SFX_MENU_BOP 6
 #define SFX_MENU_OPEN 7
 #define SFX_MENU_CLOSE 8
+// COULD BE REMOVED
 #define SFX_CRATE_SMASH 9
 #define SFX_CRATE_MOVE 10
 

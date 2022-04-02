@@ -31,3 +31,5 @@ void update_player_sprite();
 
 // Wipe the undo list
 void clear_undo(void);
+
+void update_single_tile(unsigned char x, unsigned char y, unsigned char newTile, unsigned char palette);

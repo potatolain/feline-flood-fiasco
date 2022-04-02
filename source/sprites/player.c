@@ -669,6 +669,8 @@ void handle_player_movement() {
         if (shouldKeepMoving) {
             goto go_again;
         }
+        flood_map();
+        update_flooded_tiles();
     }
 
 }

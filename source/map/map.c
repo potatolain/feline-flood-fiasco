@@ -15,9 +15,13 @@
 unsigned char currentMap[120];
 unsigned char currentMapOrig[120];
 
+unsigned char floodMap[120];
+
 unsigned char assetTable[64];
 
 ZEROPAGE_DEF(unsigned char, currentGameStyle);
+ZEROPAGE_DEF(unsigned char, waterLevel);
+ZEROPAGE_DEF(unsigned char, maxWaterLevel);
 
 unsigned char mapScreenBuffer[0x5c];
 
@@ -69,6 +73,78 @@ void fill_border_line() {
         mapScreenBuffer[0x24 + (j<<1)] = tempChar1 + 16;
         mapScreenBuffer[0x24 + (j<<1) + 1] = tempChar1 + 17;
 
+    }
+}
+
+ZEROPAGE_DEF(unsigned char, tempFloodTile);
+ZEROPAGE_DEF(unsigned char, tempFloodTileType);
+
+unsigned char gross_test(void) {
+    return (tempFloodTileType/12) == (tempFloodTile / 12);
+}
+
+void flood_tile(unsigned char tid) {
+    // TODO: How do we deal with crossing row borders?
+    tempFloodTileType = tid;
+    tempFloodTile = tid - 1; 
+    if (gross_test()) {
+        if (tempFloodTile < 120) {
+            ++floodMap[tempFloodTile];
+        }
+    }
+    // TODO: Same as above
+    tempFloodTile = tid + 1;
+    if (gross_test()) {
+        if (tempFloodTile < 120) {
+            ++floodMap[tempFloodTile];
+        }
+    }
+
+    tempFloodTile = tid - 12;
+    if (tempFloodTile < 120) {
+        ++floodMap[tempFloodTile];
+    }
+    tempFloodTile = tid + 12;
+    if (tempFloodTile < 120) {
+        ++floodMap[tempFloodTile];
+    }
+}
+
+void flood_map(void) {
+    for (i = 0; i < 120; ++i) {
+        if (currentMap[i] == GRATE_TILE || currentMap[i] == WATER_TILE) {
+            flood_tile(i);
+        }
+    }
+}
+
+ZEROPAGE_DEF(unsigned char, hasWatered);
+void update_flooded_tiles(void) {
+    hasWatered = 0;
+    for (i = 0; i < 120; ++i) {
+        tempFloodTile = floodMap[i] & 0x7f;
+        tempFloodTileType = tileCollisionTypes[currentMap[i]];
+        if (tempFloodTileType != TILE_COLLISION_SOLID && tempFloodTileType != TILE_COLLISION_LEVEL_END) {
+            // Crates buy an extra level of safety
+            // TODO: Would more be better?
+            if (tempFloodTileType == TILE_COLLISION_CRATE) {
+                tempFloodTile -= 20;
+                if (tempFloodTile > 220) {
+                    tempFloodTile = 0;
+                }
+            }
+            if (tempFloodTile > maxWaterLevel && (floodMap[i] & 0x80) == 0) {
+                floodMap[i] |= 0x80;
+                update_single_tile(i % 12, i / 12, WATER_TILE, tilePalettes[WATER_TILE]);
+                if (currentMap[i] == CAT_TILE) {
+                    sfx_play(SFX_CAT_OHNO, SFX_CHANNEL_1);
+                } else if (!hasWatered) {
+                    hasWatered = 1;
+                    sfx_play(SFX_WATER_SPREAD, SFX_CHANNEL_1);
+                }
+                currentMap[i] = WATER_TILE;
+            }
+        }
     }
 }
 

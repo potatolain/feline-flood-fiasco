@@ -8,6 +8,17 @@
 
 unsigned char palette[16];
 
+const unsigned char groundWaterLevels[64] = {
+    3, 4, 3, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10
+};
+
 // Replace any "sprite-ish" things, so that when we move them they don't duplicate
 void update_map_replace_spriteish(void) {
     if (tempChar1 == TILE_COLLISION_COLLECTABLE) {
@@ -43,6 +54,7 @@ void load_map() {
         currentMapBorderTile <<= 1;
         currentMapBorderTile += 32;
     }
+    maxWaterLevel = groundWaterLevels[currentLevelId];
 
 
     // Iterate over the map data and expand it into a full map. Each byte in the data we store actually holds
@@ -51,12 +63,15 @@ void load_map() {
     for (i = 0, j = 0; i != 60; ++i) {
         j = i<<1;
         currentMap[j] = (gameLevelData[i + tempInt1] & 0xf0) >> 4;
+        // Optimization: 1 so we can subtract the extra 1 for crates and not overflow
+        floodMap[j] = 1;
 
         tempChar1 = tileCollisionTypes[currentMap[j]];
         update_map_replace_spriteish();
 
         ++j;
         currentMap[j] = (gameLevelData[i + tempInt1] & 0x0f);
+        floodMap[j] = 1;
 
         tempChar1 = tileCollisionTypes[currentMap[j]];
         update_map_replace_spriteish();

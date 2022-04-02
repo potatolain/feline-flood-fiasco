@@ -97,7 +97,7 @@ void main() {
 
                     draw_intro_screen();
                     fade_in();
-                    handle_intro_input();
+                    wait_for_start();
                 }
 
 
@@ -110,6 +110,7 @@ void main() {
                 playerCrateCount = 0;
                 undoPosition = 0;
                 keyCount = 0;
+                waterLevel = 0;
                 clear_undo();
                 fade_out();
                 oam_clear();

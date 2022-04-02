@@ -33,8 +33,3 @@ void draw_intro_screen() {
     // you will have to hide all sprites, then put them back after. 
     ppu_on_bg();
 }
-
-void handle_intro_input() {
-    wait_for_start();
-
-}
