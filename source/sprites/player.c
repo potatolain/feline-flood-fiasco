@@ -68,17 +68,32 @@ void update_player_sprite() {
 
     rawXPosition = (PLAY_AREA_LEFT + (playerGridPositionX << 4));
     rawYPosition = (PLAY_AREA_TOP + (playerGridPositionY << 4));
-    rawTileId = playerSpriteTileId + playerDirection;
+    rawTileId = 0;
 
     if (animationPositionX) {
         rawXPosition += animationPositionX;
-        rawTileId += 2 + (((animationPositionX >> 3) & 0x01) << 1);
+        rawTileId += (((frameCount >> 3) & 0x03));
+        if (rawTileId == 2) {
+            rawTileId = 0;
+        } 
+        if (rawTileId == 3) {
+            rawTileId = 2;
+        }
+        rawTileId <<= 1;
     }
 
     if (animationPositionY) {
         rawYPosition += animationPositionY;
-        rawTileId += 2 + (((animationPositionY >> 3) & 0x01) << 1);
+        rawTileId += (((frameCount >> 3) & 0x03));
+        if (rawTileId == 2) {
+            rawTileId = 0;
+        } 
+        if (rawTileId == 3) {
+            rawTileId = 2;
+        }
+        rawTileId <<= 1;
     }
+    rawTileId += playerSpriteTileId + playerDirection;
 
 
     oam_spr(rawXPosition, rawYPosition, rawTileId, 0x00, PLAYER_SPRITE_INDEX);

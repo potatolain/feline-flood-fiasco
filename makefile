@@ -106,7 +106,7 @@ temp/%.s: temp/%.c
 sound/sfx/generated/sfx.s: sound/sfx/sfx.nsf
 	$(SFX_CONVERTER) sound/sfx/sfx.nsf -ca65 -ntsc && sleep 1 && $(AFTER_SFX_CONVERTER)
 
-rom/$(ROM_NAME).nes: temp/crt0.o $(SOURCE_O)
+rom/$(ROM_NAME).nes: temp/crt0.o $(SOURCE_O) rom/game.ips
 	@if ! test -f $(BUILD_NUMBER_FILE); then echo 0 > $(BUILD_NUMBER_FILE); fi
 	@echo $$(($$(cat $(BUILD_NUMBER_FILE)) + 1)) > $(BUILD_NUMBER_FILE)
 	$(MAIN_LINKER) -C $(CONFIG_FILE) -o rom/$(ROM_NAME).nes temp/*.o tools/cc65/lib/nes.lib  --dbgfile rom/$(ROM_NAME).dbg
