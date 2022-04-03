@@ -150,6 +150,7 @@ void main() {
                 update_hud();
                 handle_player_movement();
                 update_player_sprite();
+                update_water_levels();
                 break;
             case GAME_STATE_PAUSED:
                 sfx_play(SFX_MENU_OPEN, SFX_CHANNEL_4);  

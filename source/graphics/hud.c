@@ -7,8 +7,6 @@
 #pragma code-name ("CODE")
 #pragma rodata-name ("CODE")
 
-ZEROPAGE_DEF(unsigned char, editorSelectedTileId);
-
 #define tempTileId tempChar1
 #define tempTileIndex tempChar2
 

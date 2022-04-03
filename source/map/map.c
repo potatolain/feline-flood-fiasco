@@ -272,3 +272,14 @@ void draw_current_map_to_a_inline() {
     vram_adr(0x23c0);
     vram_write(&assetTable[0], 64);
 }
+
+void update_water_levels(void) {
+    for (i = 0; i < lastCounterSprite; ++i) {
+        if (waterLevel < maxWaterLevel) {
+            (*(unsigned char*)(0x221 + (i<<2))) = '0' + (maxWaterLevel - waterLevel) + 0x60;
+        } else {
+            (*(unsigned char*)(0x221 + (i<<2))) = 0xff;
+        }
+    }
+    oam_hide_rest(lastCounterSprite<<2);
+}

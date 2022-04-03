@@ -272,6 +272,7 @@ void handle_player_movement() {
             goto undo_again;
         }
         
+        --waterLevel;
         update_hud();
         return;
     }
@@ -705,6 +706,7 @@ void handle_player_movement() {
         }
         flood_map();
         update_flooded_tiles();
+        ++waterLevel;
         noActionSteps = 0;
     } else {
         ++noActionSteps;

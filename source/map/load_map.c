@@ -8,6 +8,8 @@
 
 unsigned char palette[16];
 
+ZEROPAGE_DEF(unsigned char, lastCounterSprite);
+
 // TODO: If we really never change this, hardcode it.
 const unsigned char groundWaterLevels[64] = {
     3, 4, 3, 3, 3, 3, 3, 3,
@@ -33,12 +35,18 @@ void update_map_replace_spriteish(void) {
     } else {
         currentMapOrig[j] = currentMap[j];
     }
+
+    if (currentMap[j] == GRATE_TILE) {
+        oam_spr(36 + ((j % 12)<<4), 58 + ((j  / 12) << 4), (0x60 + '0' + maxWaterLevel), 0, lastCounterSprite<<2);
+        ++lastCounterSprite;
+    }
 }
 
 // Loads the map at the player's current position into the ram variable for the map. 
 void load_map() {
     totalCollectableCount = 0;
     totalCrateCount = 0;
+    lastCounterSprite = 8; // Skip sprite0 and player
 
     // Each map is 64 bytes in total, so find the index to start looking at
     tempInt1 = currentLevelId << 6;
@@ -64,7 +72,7 @@ void load_map() {
     for (i = 0, j = 0; i != 60; ++i) {
         j = i<<1;
         currentMap[j] = (gameLevelData[i + tempInt1] & 0xf0) >> 4;
-        // Optimization: 1 so we can subtract the extra 1 for crates and not overflow
+        // Optimization: 1 so we can subtract the extra 1 for crates and not overflow (This doesn't apply anymore but changing it would change a lot...)
         floodMap[j] = 1;
 
         tempChar1 = tileCollisionTypes[currentMap[j]];
