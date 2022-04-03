@@ -21,7 +21,7 @@ void draw_pause_screen() {
     put_str(NTADR_B(11, 7), "- Paused -");
 
     put_str(NTADR_B(12, 16), "Continue");
-    put_str(NTADR_B(12, 18), "Restart");
+    put_str(NTADR_B(12, 18), "Retry level");
 
     // We purposely leave sprites off, so they do not clutter the view. 
     // This means all menu drawing must be done with background tiles - if you want to use sprites (eg for a menu item),

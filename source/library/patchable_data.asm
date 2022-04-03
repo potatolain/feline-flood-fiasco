@@ -213,9 +213,8 @@ _introScreenEnabled:
 .export _introScreenEnabled: absolute
 
 _singleLevelOverride:
-    ; FIXME
     .byte $ff
-    ;.byte 19
+    ;.byte 14
     ;.byte 5
 .export _singleLevelOverride: absolute
 

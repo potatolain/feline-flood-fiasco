@@ -79,6 +79,7 @@ void clear_undo(void) {
 
 void inc_level(void) { 
     ++currentLevelId;
+    gameCollectableCount += playerCollectableCount;
     if (currentLevelId == totalGameLevels) {
         gameState = GAME_STATE_CREDITS;
     } else {
@@ -299,7 +300,6 @@ void handle_player_movement() {
 
         if (currentUndoAction == TILE_COLLISION_COLLECTABLE) {
             --playerCollectableCount;
-            --gameCollectableCount;
         // } else if (currentUndoAction == TILE_COLLISION_GAP) {
             //--gameCrates;
             // --playerCrateCount;
@@ -309,7 +309,7 @@ void handle_player_movement() {
             ++keyCount;
         }
 
-        sfx_play(SFX_HURT, SFX_CHANNEL_1);
+        sfx_play(SFX_MENU_BOP, SFX_CHANNEL_1);
 
         // Redraw parts of the map if it was changed
         /*
@@ -596,7 +596,6 @@ void handle_player_movement() {
         case TILE_COLLISION_KEY:
             if (currentCollision == TILE_COLLISION_COLLECTABLE) {
                 ++playerCollectableCount;
-                ++gameCollectableCount;
                 tempSfx = SFX_CAT;
             } else {
                 ++keyCount;
