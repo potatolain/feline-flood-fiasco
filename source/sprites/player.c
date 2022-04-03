@@ -53,6 +53,8 @@ ZEROPAGE_DEF(unsigned char, noActionSteps);
 
 #define collisionTempTileId tempChar8
 
+#define tempSfx tempChar9
+
 
 #define collisionTempValue tempInt1
 
@@ -582,8 +584,10 @@ void handle_player_movement() {
             if (currentCollision == TILE_COLLISION_COLLECTABLE) {
                 ++playerCollectableCount;
                 ++gameCollectableCount;
+                tempSfx = SFX_CAT;
             } else {
                 ++keyCount;
+                tempSfx = SFX_KEY;
             }
             set_undos_from_params();
             undoBlockFromId[undoPosition] = currentMap[rawTileId];
@@ -594,7 +598,7 @@ void handle_player_movement() {
 
             update_single_tile(nextPlayerGridPositionX, nextPlayerGridPositionY, currentMap[rawTileId], tilePalettes[currentMap[rawTileId]]);
             update_hud();
-            sfx_play(SFX_HEART, SFX_CHANNEL_1);
+            sfx_play(tempSfx, SFX_CHANNEL_1);
             break;
         case TILE_COLLISION_LOCK:
             if (keyCount == 0) {
@@ -705,7 +709,7 @@ void handle_player_movement() {
     } else {
         ++noActionSteps;
 
-        if (noActionSteps > 32) {
+        if (noActionSteps > 45) {
             draw_oh_dang_text();
         }
     }

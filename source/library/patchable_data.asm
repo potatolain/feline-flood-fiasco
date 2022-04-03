@@ -214,9 +214,9 @@ _introScreenEnabled:
 
 _singleLevelOverride:
     ; FIXME
-    ;.byte $ff
+    .byte $ff
     ; .byte 15
-    .byte 5
+    ;.byte 5
 .export _singleLevelOverride: absolute
 
 _titleSong:

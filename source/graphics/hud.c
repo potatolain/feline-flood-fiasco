@@ -169,7 +169,8 @@ void update_hud() {
         draw_num_to_sb(totalGameLevels);
     }
     if (enableKeyCount) {
-        screenBuffer[i++] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x63) | NT_UPD_HORZ;
+        screenBuffer[i] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x63) | NT_UPD_HORZ;
+        ++i;
         screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x63);
         screenBuffer[i++] = 2;
         draw_num_to_sb(keyCount);
