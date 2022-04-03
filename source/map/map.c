@@ -79,12 +79,12 @@ void fill_border_line() {
 ZEROPAGE_DEF(unsigned char, tempFloodTile);
 ZEROPAGE_DEF(unsigned char, tempFloodTileType);
 
+// Check to make sure we did not cross a row border - if we did, stop trying
 unsigned char gross_test(void) {
     return (tempFloodTileType/12) == (tempFloodTile / 12);
 }
 
 void flood_tile(unsigned char tid) {
-    // TODO: How do we deal with crossing row borders?
     tempFloodTileType = tid;
     tempFloodTile = tid - 1; 
     if (gross_test()) {
@@ -92,7 +92,6 @@ void flood_tile(unsigned char tid) {
             ++floodMap[tempFloodTile];
         }
     }
-    // TODO: Same as above
     tempFloodTile = tid + 1;
     if (gross_test()) {
         if (tempFloodTile < 120) {
