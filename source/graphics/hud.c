@@ -165,18 +165,22 @@ void update_hud() {
         screenBuffer[i] = 5;
         ++i;
         draw_num_to_sb(currentLevelId + 1);
-        screenBuffer[i++] = '/' + 0x60;
+        screenBuffer[i] = '/' + 0x60;
+        ++i;
         draw_num_to_sb(totalGameLevels);
     }
     if (enableKeyCount) {
         screenBuffer[i] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x63) | NT_UPD_HORZ;
         ++i;
-        screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x63);
-        screenBuffer[i++] = 2;
+        screenBuffer[i] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x63);
+        ++i;
+        screenBuffer[i] = 2;
+        ++i;
         draw_num_to_sb(keyCount);
 
     }
-    screenBuffer[i++] = NT_UPD_EOF;
+    screenBuffer[i] = NT_UPD_EOF;
+    ++i;
     set_vram_update(screenBuffer);
 
 }

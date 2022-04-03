@@ -9,6 +9,12 @@
 #pragma code-name ("CODE")
 #pragma rodata-name ("CODE")
 
+void draw_tempint1(void) {
+    vram_put('0' + ((tempInt1 / 100) % 10) + 0x60);
+    vram_put('0' +((tempInt1 / 10) % 10) + 0x60);
+    vram_put('0' + ((tempInt1 % 10)) + 0x60);
+}
+
 void draw_win_screen() {
     ppu_off();
     clear_screen_with_border();
@@ -17,7 +23,7 @@ void draw_win_screen() {
     // Add whatever you want here; NTADR_A just picks a position on the screen for you. Your options are 0, 0 to 32, 30
     put_str(NTADR_A(8, 5), "Congratulations!");
 
-    put_str(NTADR_A(9, 12), "You have won! ");
+    put_str(NTADR_A(9, 12), "You escaped! ");
 
     put_str(NTADR_A(5, 24), "Your time:       ");
 
@@ -38,29 +44,20 @@ void draw_win_screen() {
     vram_put('0' + screenBuffer[4] + 0x60);
 
     tempChar1 = 0;
-    switch (currentGameStyle) {
-        case GAME_STYLE_MAZE:
-            // Do nothing; nothing special to show
-            tempChar1 = 1;
-            break;
-        case GAME_STYLE_COIN:
-            put_str(NTADR_A(5, 22), coinsCollectedText);
-            tempInt1 = gameCollectableCount;
-            break;
-        // NOTE: Removed for space concerns
-            /*
-        case GAME_STYLE_CRATES:
-            put_str(NTADR_A(5, 22), cratesRemovedText);
-            tempInt1 = gameCrates;
-            break;
-            */
-    }
-    // NOTE: If there are space issues, we might benefit from incrementing these 
-    // "smartly" and replacing this with & 0x0f, &0xf0, (>>8)& 0x0f, etc
-    if (tempChar1 == 0) {
-        vram_put('0' + ((tempInt1 / 100) % 10) + 0x60);
-        vram_put('0' +((tempInt1 / 10) % 10) + 0x60);
-        vram_put('0' + ((tempInt1 % 10)) + 0x60);
+    put_str(NTADR_A(5, 22), coinsCollectedText);
+    // Text too long, reset address
+    vram_adr(NTADR_A(20, 22));
+    tempInt1 = gameCollectableCount;
+
+    // gameCollectableAvailableCount
+    draw_tempint1();
+    vram_put('/' + 0x60);
+    tempInt1 = TOTAL_CATS;
+    draw_tempint1();
+
+    // This is your last ending screen, unless you got all cats!
+    if (gameCollectableCount <= TOTAL_CATS) {
+        put_str(NTADR_A(5, 17), "Thank you for playing!");
     }
 
     // Hide all existing sprites
@@ -70,6 +67,9 @@ void draw_win_screen() {
 }
 
 void draw_credits_screen() {
+    if (gameCollectableCount <= TOTAL_CATS) {
+        reset();
+    }
     ppu_off();
     scroll(0, 0);
 
