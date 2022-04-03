@@ -158,9 +158,10 @@ void update_flooded_tiles(void) {
 
                 if (currentMap[i] == CAT_TILE) {
                     sfx_play(SFX_CAT_OHNO, SFX_CHANNEL_1);
+                    hasWatered = 1;
                 } else if (!hasWatered) {
                     hasWatered = 1;
-                    sfx_play(SFX_WATER_SPREAD, SFX_CHANNEL_1);
+                    sfx_play(SFX_WATER_SPREAD, SFX_CHANNEL_4);
                 }
                 currentMap[i] = WATER_TILE;
             }
