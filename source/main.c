@@ -79,7 +79,7 @@ void main() {
                 fade_in();
                 break;
             case GAME_STATE_TITLE_INPUT:
-                wait_for_start();
+                handle_title_input();
                 gameState = GAME_STATE_POST_TITLE;
                 break;
             case GAME_STATE_POST_TITLE:
@@ -182,13 +182,15 @@ void main() {
                 // Draw the "you won" screen
                 draw_win_screen();
                 fade_in();
-                wait_for_start();
+                // See comment below
+                handle_title_input();
                 fade_out();
 
-                // Folow it up with the credits.
+                // Follow it up with the credits.
                 draw_credits_screen();
                 fade_in();
-                wait_for_start();
+                // Normal wait_for_start with an extra update of the player sprite to draw it (end of compo, time to refactor limited)
+                handle_title_input();
                 fade_out();
                 reset();
                 break;

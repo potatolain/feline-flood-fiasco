@@ -48,20 +48,32 @@ void clear_asset_table() {
 // Loads the assets from assetTable (for the row *ending* with j) into mapScreenBuffer
 // at tempArrayIndex. 
 void load_palette_to_map_screen_buffer(int attributeTableAdr) {
-    mapScreenBuffer[tempArrayIndex++] = MSB(attributeTableAdr + j - 7) | NT_UPD_HORZ;
-    mapScreenBuffer[tempArrayIndex++] = LSB(attributeTableAdr + j - 7);
-    mapScreenBuffer[tempArrayIndex++] = 8;
+    mapScreenBuffer[tempArrayIndex] = MSB(attributeTableAdr + j - 7) | NT_UPD_HORZ;
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = LSB(attributeTableAdr + j - 7);
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = 8;
+    ++tempArrayIndex;
 
     // Using an unrolled loop to save a bit of RAM - not like we need it really.
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-7];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-6];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-5];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-4];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-3];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-2];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-1];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j];
-    mapScreenBuffer[tempArrayIndex++] = NT_UPD_EOF;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-7];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-6];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-5];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-4];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-3];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-2];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-1];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = NT_UPD_EOF;
+    ++tempArrayIndex;
 }
 
 // This is an ascii space

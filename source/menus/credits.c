@@ -5,6 +5,7 @@
 #include "source/configuration/game_states.h"
 #include "source/menus/text_helpers.h"
 #include "source/map/map.h"
+#include "source/sprites/player.h"
 
 #pragma code-name ("CODE")
 #pragma rodata-name ("CODE")
@@ -23,7 +24,7 @@ void draw_win_screen() {
     // Add whatever you want here; NTADR_A just picks a position on the screen for you. Your options are 0, 0 to 32, 30
     put_str(NTADR_A(8, 5), "Congratulations!");
 
-    put_str(NTADR_A(9, 12), "You escaped! ");
+    put_str(NTADR_A(9, 8), "You escaped! ");
 
     put_str(NTADR_A(5, 24), "Your time:       ");
 
@@ -56,18 +57,34 @@ void draw_win_screen() {
     draw_tempint1();
 
     // This is your last ending screen, unless you got all cats!
-    if (gameCollectableCount <= TOTAL_CATS) {
-        put_str(NTADR_A(5, 17), "Thank you for playing!");
+    if (gameCollectableCount < TOTAL_CATS) {
+        put_str(NTADR_A(5, 20), "Thank you for playing!");
     }
 
     // Hide all existing sprites
     oam_clear();
-    ppu_on_all();
+    if (gameCollectableCount < TOTAL_CATS) {
+        ppu_on_all();
+        playerGridPositionX = 5;
+	    playerGridPositionY = 3;
+	    // Aim the player down to start
+	    playerSpriteTileId = 0x40;
+        playerDirection = SPRITE_DIRECTION_DOWN;
+
+        for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 3; ++j) {
+                update_single_tile(4+i, 5+j, 14, tilePalettes[14]);
+            }
+        }
+    } else {
+        ppu_on_bg();
+    }
+
 
 }
 
 void draw_credits_screen() {
-    if (gameCollectableCount <= TOTAL_CATS) {
+    if (gameCollectableCount < TOTAL_CATS) {
         reset();
     }
     ppu_off();
@@ -76,6 +93,12 @@ void draw_credits_screen() {
 
     vram_adr(0x2000);
     vram_write(&creditsScreenData[0], 0x400);
+
+    playerGridPositionX = 6;
+	playerGridPositionY = 6;
+	// Aim the player down to start
+	playerSpriteTileId = 0x40;
+    playerDirection = SPRITE_DIRECTION_DOWN;
 
     // Hide all existing sprites
     oam_clear();

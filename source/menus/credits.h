@@ -8,3 +8,4 @@ void draw_win_screen();
 void draw_credits_screen();
 
 #define TOTAL_CATS 44
+//#define TOTAL_CATS 1
