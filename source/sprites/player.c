@@ -64,6 +64,16 @@ void clear_undo(void) {
     }
 }
 
+void inc_level(void) { 
+    ++currentLevelId;
+    if (currentLevelId == totalGameLevels) {
+        gameState = GAME_STATE_CREDITS;
+    } else {
+        gameState = GAME_STATE_LOAD_LEVEL;
+        sfx_play(SFX_WIN, SFX_CHANNEL_1);
+    }
+}
+
 // Code here goes in PRG instead. because space is hard
 // NOTE: This uses tempChar1 through tempChar3; the caller must not use these.
 void update_player_sprite() {
@@ -316,12 +326,19 @@ void handle_player_movement() {
     }
 
 
+    rawTileId = nextPlayerGridPositionX + (nextPlayerGridPositionY * 12);
+    currentCollision = tileCollisionTypes[currentMap[rawTileId]];
+
+    if (controllerState & PAD_A && currentCollision == TILE_COLLISION_LEVEL_END) {
+        inc_level();
+        return;
+    }
+
     if (playerGridPositionX == nextPlayerGridPositionX && playerGridPositionY == nextPlayerGridPositionY) {
         // Ya didn't move...
         return; 
     }
-    rawTileId = nextPlayerGridPositionX + (nextPlayerGridPositionY * 12);
-    currentCollision = tileCollisionTypes[currentMap[rawTileId]];
+
 
     if (currentCollision == TILE_COLLISION_ICE) {
         ++shouldKeepMoving;
@@ -631,25 +648,19 @@ void handle_player_movement() {
                         }
                     }
                     break;
-                case GAME_STYLE_CRATES: 
+                /*case GAME_STYLE_CRATES: 
                     for (i = 0; i != 120; ++i) {
                         if (totalCrateCount != playerCrateCount) {
                             // Sorry, you didn't get em all. Plz try again.
                             collisionTempTileId = 1;
                         }
                     }
-                    break;
+                    break;*/
                 default:
                     break;
             }
             if (!collisionTempTileId) {
-                ++currentLevelId;
-                if (currentLevelId == totalGameLevels) {
-                    gameState = GAME_STATE_CREDITS;
-                } else {
-                    gameState = GAME_STATE_LOAD_LEVEL;
-                    sfx_play(SFX_WIN, SFX_CHANNEL_1);
-                }
+                inc_level();
                 return;
             }
             break;
