@@ -27,7 +27,7 @@ void draw_hud() {
 
     vram_adr(NAMETABLE_A + HUD_ATTRS_START);
     for (i = 0; i != 16; ++i) {
-        vram_put(0xff);
+        vram_put(0x00);
     }
 
     set_vram_update(NULL);

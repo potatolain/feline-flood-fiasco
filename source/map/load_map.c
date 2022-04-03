@@ -11,7 +11,7 @@ unsigned char palette[16];
 // TODO: If we really never change this, hardcode it.
 const unsigned char groundWaterLevels[64] = {
     3, 4, 3, 3, 3, 3, 3, 3,
-    3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3, 3, 6, 2, 3, 3, 5,
     3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3,
     10, 10, 10, 10, 10, 10, 10, 10,
