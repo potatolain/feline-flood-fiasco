@@ -179,3 +179,15 @@ void update_hud() {
     set_vram_update(screenBuffer);
 
 }
+
+const unsigned char* stuck = "Stuck? Press start (enter) to   reset.";
+void draw_oh_dang_text(void) {
+    screenBuffer[0] = MSB(0x2002) | NT_UPD_HORZ;
+    screenBuffer[1] = LSB(0x2002);
+    screenBuffer[2] = 38;
+    for (i = 0; i < 38; ++i) {
+        screenBuffer[i+3] = stuck[i] + 0x60;
+    }
+    screenBuffer[41] = NT_UPD_EOF;
+    set_vram_update(screenBuffer);
+}

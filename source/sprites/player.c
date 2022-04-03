@@ -40,6 +40,7 @@ ZEROPAGE_DEF(unsigned char, currentCollision);
 ZEROPAGE_DEF(unsigned char, shouldKeepMoving);
 ZEROPAGE_DEF(unsigned char, currentUndoAction);
 ZEROPAGE_DEF(unsigned char, playerDidMove);
+ZEROPAGE_DEF(unsigned char, noActionSteps);
 
 
 // Huge pile of temporary variables
@@ -234,7 +235,7 @@ void handle_player_movement() {
             --playerCollectableCount;
             --gameCollectableCount;
         } else if (currentUndoAction == TILE_COLLISION_GAP) {
-            --gameCrates;
+            //--gameCrates;
             --playerCrateCount;
         } else if (currentUndoAction == TILE_COLLISION_KEY) {
             --keyCount;
@@ -373,7 +374,7 @@ void handle_player_movement() {
                         sfx_play(SFX_CRATE_MOVE, SFX_CHANNEL_1);
                     } else if (collisionTempTileId == TILE_COLLISION_GAP) {
                         ++playerCrateCount;
-                        ++gameCrates;
+                        //++gameCrates;
                         set_undos_from_params();
                         undoBlockFromId[undoPosition] = currentMap[rawTileId+1];
                         undoBlockToId[undoPosition] = currentMap[rawTileId];
@@ -435,7 +436,7 @@ void handle_player_movement() {
 
                         currentMap[rawTileId-1] = currentMapOrig[rawTileId-1];
                         ++playerCrateCount;
-                        ++gameCrates;
+                        //++gameCrates;
 
                         collisionTempTileId = currentMap[rawTileId-1];
                         undoActionType[undoPosition] = TILE_COLLISION_GAP;
@@ -491,7 +492,7 @@ void handle_player_movement() {
 
                         currentMap[rawTileId-12] = 0;
                         ++playerCrateCount;
-                        ++gameCrates;
+                        //++gameCrates;
 
                         collisionTempTileId = currentMap[rawTileId-12];
                         undoActionType[undoPosition] = TILE_COLLISION_GAP;
@@ -547,7 +548,7 @@ void handle_player_movement() {
 
                         currentMap[rawTileId+12] = currentMapOrig[rawTileId + 12];
                         ++playerCrateCount;
-                        ++gameCrates;
+                        //++gameCrates;
 
                         collisionTempTileId = currentMap[rawTileId+12];
                         undoActionType[undoPosition] = TILE_COLLISION_GAP;
@@ -700,6 +701,13 @@ void handle_player_movement() {
         }
         flood_map();
         update_flooded_tiles();
+        noActionSteps = 0;
+    } else {
+        ++noActionSteps;
+
+        if (noActionSteps > 32) {
+            draw_oh_dang_text();
+        }
     }
 
 }

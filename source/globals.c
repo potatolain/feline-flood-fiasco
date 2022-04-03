@@ -18,7 +18,8 @@ ZEROPAGE_DEF(unsigned char, playerSpriteTileId);
 
 ZEROPAGE_DEF(unsigned int, gameTime);
 ZEROPAGE_DEF(unsigned int, gameCollectableCount);
-ZEROPAGE_DEF(unsigned int, gameCrates);
+// Need extra zeropage, so disabling this variable
+// ZEROPAGE_DEF(unsigned int, gameCrates);
 
 
 ZEROPAGE_ARRAY_DEF(unsigned char, screenBuffer, 0x50);

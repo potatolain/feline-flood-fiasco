@@ -87,7 +87,7 @@ void main() {
 
                 gameTime = frameCount;
                 gameCollectableCount = 0;
-                gameCrates = 0;
+                // gameCrates = 0;
 
                 if (singleLevelOverride != 255) {
                     currentLevelId = singleLevelOverride;
