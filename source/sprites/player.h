@@ -33,3 +33,7 @@ void update_player_sprite();
 void clear_undo(void);
 
 void update_single_tile(unsigned char x, unsigned char y, unsigned char newTile, unsigned char palette);
+void run_tile_batch(void);
+
+// Set this to 0 to start queueing up tiles for a batch (up to 4 tiles)
+ZEROPAGE_EXTERN(unsigned char, runTileBatch);

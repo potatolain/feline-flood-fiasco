@@ -111,6 +111,7 @@ void main() {
                 undoPosition = 0;
                 keyCount = 0;
                 waterLevel = 0;
+                runTileBatch = 1;
                 clear_undo();
                 fade_out();
                 oam_clear();

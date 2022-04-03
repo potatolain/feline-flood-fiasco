@@ -110,11 +110,15 @@ void update_hud() {
             
             screenBuffer[i++] = (tilePalettes[tempTileIndex] << 6) | 0x3f;
             */
-            screenBuffer[i++] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x83) | NT_UPD_HORZ;
-            screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x83);
-            screenBuffer[i++] = 5;
+            screenBuffer[i] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x83) | NT_UPD_HORZ;
+            ++i;
+            screenBuffer[i] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x83);
+            ++i;
+            screenBuffer[i] = 5;
+            ++i;
             draw_num_to_sb(playerCollectableCount);
-            screenBuffer[i++] = '/' + 0x60;
+            screenBuffer[i] = '/' + 0x60;
+            ++i;
             draw_num_to_sb(totalCollectableCount);
 
             break;
@@ -154,9 +158,12 @@ void update_hud() {
     }
 
     if (enableLevelShow) {
-        screenBuffer[i++] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x97) | NT_UPD_HORZ;
-        screenBuffer[i++] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x97);
-        screenBuffer[i++] = 5;
+        screenBuffer[i] = MSB(NAMETABLE_A + HUD_POSITION_START + 0x97) | NT_UPD_HORZ;
+        ++i;
+        screenBuffer[i] = LSB(NAMETABLE_A + HUD_POSITION_START + 0x97);
+        ++i;
+        screenBuffer[i] = 5;
+        ++i;
         draw_num_to_sb(currentLevelId + 1);
         screenBuffer[i++] = '/' + 0x60;
         draw_num_to_sb(totalGameLevels);

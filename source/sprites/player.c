@@ -102,6 +102,18 @@ void update_player_sprite() {
     oam_spr(rawXPosition + NES_SPRITE_WIDTH, rawYPosition + NES_SPRITE_HEIGHT, rawTileId + 17, 0x00, PLAYER_SPRITE_INDEX+12);
 }
 
+ZEROPAGE_DEF(unsigned char, runTileBatch);
+ZEROPAGE_DEF(unsigned char, updateTileTemp);
+ZEROPAGE_DEF(unsigned char, screenBufferIndex);
+void run_tile_batch(void) {
+    if (runTileBatch && screenBufferIndex != 0) {
+        set_vram_update(screenBuffer);
+        ppu_wait_nmi();
+        set_vram_update(NULL);
+        screenBufferIndex = 0;
+    }
+}
+
 // Updates a single tile on the map visually
 void update_single_tile(unsigned char x, unsigned char y, unsigned char newTile, unsigned char palette) {
 
@@ -114,21 +126,33 @@ void update_single_tile(unsigned char x, unsigned char y, unsigned char newTile,
     }
 
     collisionTempValue = 0x2000 + ((x + 2)<<1) + ((y + 1)<<6);
-    screenBuffer[0] = MSB(collisionTempValue);
-    screenBuffer[1] = LSB(collisionTempValue);
-    screenBuffer[2] = newTile;
+    screenBuffer[screenBufferIndex] = MSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = LSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = newTile;
+    ++screenBufferIndex;
     ++collisionTempValue;
-    screenBuffer[3] = MSB(collisionTempValue);
-    screenBuffer[4] = LSB(collisionTempValue);
-    screenBuffer[5] = newTile+1;
+    screenBuffer[screenBufferIndex] = MSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = LSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = newTile+1;
+    ++screenBufferIndex;
     collisionTempValue += 31;
-    screenBuffer[6] = MSB(collisionTempValue);
-    screenBuffer[7] = LSB(collisionTempValue);
-    screenBuffer[8] = newTile+16;
+    screenBuffer[screenBufferIndex] = MSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = LSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = newTile+16;
+    ++screenBufferIndex;
     ++collisionTempValue;
-    screenBuffer[9] = MSB(collisionTempValue);
-    screenBuffer[10] = LSB(collisionTempValue);
-    screenBuffer[11] = newTile+17;
+    screenBuffer[screenBufferIndex] = MSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = LSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = newTile+17;
+    ++screenBufferIndex;
 
     // Raw X / Y positions on-screen
     collisionTempX = x + 2;
@@ -155,15 +179,20 @@ void update_single_tile(unsigned char x, unsigned char y, unsigned char newTile,
         }
     }
 
-    screenBuffer[14] = assetTable[collisionTempValue];
+    screenBufferIndex += 2;
+    screenBuffer[screenBufferIndex] = assetTable[collisionTempValue];
+    screenBufferIndex -= 2;
     collisionTempValue += NAMETABLE_A + 0x3c0;
-    screenBuffer[12] = MSB(collisionTempValue);
-    screenBuffer[13] = LSB(collisionTempValue);
+    screenBuffer[screenBufferIndex] = MSB(collisionTempValue);
+    ++screenBufferIndex;
+    screenBuffer[screenBufferIndex] = LSB(collisionTempValue);
+    ++screenBufferIndex;
+    ++screenBufferIndex;
 
-    screenBuffer[15] = NT_UPD_EOF;
-    set_vram_update(screenBuffer);
-    ppu_wait_nmi();
-    set_vram_update(NULL);
+    screenBuffer[screenBufferIndex] = NT_UPD_EOF;
+    // NOTE: Purposely NOT post-incrementing here, so future runs start here instead.
+
+    run_tile_batch();
 }
 
 // Set up the undo array from the current parameters. Some things will have to be overridden.

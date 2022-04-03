@@ -119,14 +119,16 @@ void flood_map(void) {
 }
 
 ZEROPAGE_DEF(unsigned char, hasWatered);
+ZEROPAGE_DEF(unsigned char, tilesInBatch);
 void update_flooded_tiles(void) {
     hasWatered = 0;
+    runTileBatch = 0;
+    tilesInBatch = 0;
     for (i = 0; i < 120; ++i) {
         tempFloodTile = floodMap[i] & 0x7f;
         tempFloodTileType = tileCollisionTypes[currentMap[i]];
         if (tempFloodTileType != TILE_COLLISION_SOLID && tempFloodTileType != TILE_COLLISION_LEVEL_END) {
             // Crates buy an extra level of safety
-            // TODO: Would more be better?
             if (tempFloodTileType == TILE_COLLISION_CRATE) {
                 tempFloodTile -= 20;
                 if (tempFloodTile > 220) {
@@ -135,7 +137,14 @@ void update_flooded_tiles(void) {
             }
             if (tempFloodTile > maxWaterLevel && (floodMap[i] & 0x80) == 0) {
                 floodMap[i] |= 0x80;
+                ++tilesInBatch;
+                if (tilesInBatch == 3) {
+                    tilesInBatch = 0;
+                    runTileBatch = 1;
+                }
                 update_single_tile(i % 12, i / 12, WATER_TILE, tilePalettes[WATER_TILE]);
+                runTileBatch = 0;
+
                 if (currentMap[i] == CAT_TILE) {
                     sfx_play(SFX_CAT_OHNO, SFX_CHANNEL_1);
                 } else if (!hasWatered) {
@@ -146,6 +155,8 @@ void update_flooded_tiles(void) {
             }
         }
     }
+    runTileBatch = 1;
+    run_tile_batch();
 }
 
 void update_asset_table_based_on_i_j() {
