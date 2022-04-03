@@ -121,6 +121,41 @@ void flood_tile(unsigned char tid) {
     }
 }
 
+// Reverse the above
+void unflood_tile(unsigned char tid) {
+    tempFloodTileType = tid;
+    
+    tempFloodTile = tid + 12;
+    if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+        floodMap[tempFloodTile] &= 0x7f;
+        --floodMap[tempFloodTile];
+    }
+
+    tempFloodTile = tid - 12;
+    if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+        floodMap[tempFloodTile] &= 0x7f;
+        --floodMap[tempFloodTile];
+    }
+
+
+    tempFloodTile = tid + 1;
+    if (gross_test()) {
+        if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+            floodMap[tempFloodTile] &= 0x7f;
+            --floodMap[tempFloodTile];
+        }
+    }
+
+    tempFloodTile = tid - 1; 
+    if (gross_test()) {
+        if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+            floodMap[tempFloodTile] &= 0x7f;
+            --floodMap[tempFloodTile];
+        }
+    }
+}
+
+
 void flood_map(void) {
     for (i = 0; i < 120; ++i) {
         if (currentMap[i] == GRATE_TILE || currentMap[i] == WATER_TILE) {
@@ -128,6 +163,15 @@ void flood_map(void) {
         }
     }
 }
+
+void unflood_map(void) {
+    for (i = 119; i != 255; --i) {
+        if (currentMap[i] == GRATE_TILE || currentMap[i] == WATER_TILE) {
+            unflood_tile(i);
+        }
+    }
+}
+
 
 ZEROPAGE_DEF(unsigned char, hasWatered);
 ZEROPAGE_DEF(unsigned char, tilesInBatch);

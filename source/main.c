@@ -108,7 +108,8 @@ void main() {
             case GAME_STATE_LOAD_LEVEL_1: // Used to start music in the case above.
                 playerCollectableCount = 0;
                 playerCrateCount = 0;
-                undoPosition = 0;
+                undoNumber = 0;
+                undoArrayPosition = 0;
                 keyCount = 0;
                 waterLevel = 0;
                 runTileBatch = 1;

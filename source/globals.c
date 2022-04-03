@@ -40,7 +40,7 @@ ZEROPAGE_DEF(unsigned char, tempChar8);
 ZEROPAGE_DEF(unsigned char, tempChar9);
 
 ZEROPAGE_DEF(int, tempInt1);
-ZEROPAGE_DEF(int, tempInt2);
+ZEROPAGE_DEF(unsigned int, tempInt2);
 ZEROPAGE_DEF(int, tempInt3);
 
 // This can be used to convert a byte value to a bit id - just get the 

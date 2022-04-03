@@ -62,3 +62,5 @@ void update_flooded_tiles(void);
 ZEROPAGE_EXTERN(unsigned char, lastCounterSprite);
 
 void update_water_levels(void);
+void unflood_map(void);
+void update_flooded_tiles(void);

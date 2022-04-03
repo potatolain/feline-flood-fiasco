@@ -49,7 +49,7 @@ ZEROPAGE_EXTERN(unsigned char, tempChar9);
 
 
 ZEROPAGE_EXTERN(int, tempInt1);
-ZEROPAGE_EXTERN(int, tempInt2);
+ZEROPAGE_EXTERN(unsigned int, tempInt2);
 ZEROPAGE_EXTERN(int, tempInt3);
 
 extern const unsigned int bitToByte[8];
