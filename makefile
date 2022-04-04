@@ -116,8 +116,8 @@ rom/$(ROM_NAME).nes: temp/crt0.o $(SOURCE_O) rom/game.ips
 	tools/flips/flips.exe --apply "rom/game.ips" "rom/puzzle.nes" "rom/puzzle-patched.nes"
 
 s3_upload:
-	mc cp ./rom/puzzle.nes s3/cpprograms-nes-games-https/ld50/ld50-$$(cat $(BUILD_NUMBER_FILE)).nes && mc policy public s3/cpprograms-nes-games-https/ld50/ld50-$$(cat $(BUILD_NUMBER_FILE)).nes
-	mc cp ./rom/puzzle.nes s3/cpprograms-nes-games-https/ld50/ld50-latest.nes && mc policy public s3/cpprograms-nes-games-https/ld50/ld50-latest.nes
+	mc cp ./rom/puzzle-patched.nes s3/cpprograms-nes-games-https/ld50/ld50-$$(cat $(BUILD_NUMBER_FILE)).nes && mc policy public s3/cpprograms-nes-games-https/ld50/ld50-$$(cat $(BUILD_NUMBER_FILE)).nes
+	mc cp ./rom/puzzle-patched.nes s3/cpprograms-nes-games-https/ld50/ld50-latest.nes && mc policy public s3/cpprograms-nes-games-https/ld50/ld50-latest.nes
 
 
 clean:
