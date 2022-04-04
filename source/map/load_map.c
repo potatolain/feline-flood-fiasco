@@ -10,17 +10,43 @@ unsigned char palette[16];
 
 ZEROPAGE_DEF(unsigned char, lastCounterSprite);
 
-// TODO: If we really never change this, hardcode it.
+/*
+// BEFORE RE-SORTING
 const unsigned char groundWaterLevels[64] = {
     3, 4, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 6, 2, 3, 3, 5,
-    2, 3, 10, 4, 3, 3, 3, 3,
+    2, 3, 10, 4, 
+    
+    
+    
+    
+    3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3,
     10, 10, 10, 10, 10, 10, 10, 10,
     10, 10, 10, 10, 10, 10, 10, 10,
     10, 10, 10, 10, 10, 10, 10, 10,
     10, 10, 10, 10, 10, 10, 10, 10
 };
+*/
+
+const unsigned char groundWaterLevels[64] = {
+    3, 4, 3, 3, 3, 3, 3, 3,
+    6, 3, 3, 3, 3, 2, 3, 5,
+    2, 4, 3, 10, 
+    
+    
+    
+    
+    3, 3, 3, 3,
+    3, 3, 3, 3, 3, 3, 3, 3,
+
+
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 10, 10, 10, 10, 10, 10
+};
+
 
 // Replace any "sprite-ish" things, so that when we move them they don't duplicate
 void update_map_replace_spriteish(void) {
