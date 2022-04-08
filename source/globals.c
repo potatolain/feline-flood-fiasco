@@ -18,7 +18,8 @@ ZEROPAGE_DEF(unsigned char, playerSpriteTileId);
 
 ZEROPAGE_DEF(unsigned int, gameTime);
 ZEROPAGE_DEF(unsigned int, gameCollectableCount);
-ZEROPAGE_DEF(unsigned int, gameCrates);
+// Need extra zeropage, so disabling this variable
+// ZEROPAGE_DEF(unsigned int, gameCrates);
 
 
 ZEROPAGE_ARRAY_DEF(unsigned char, screenBuffer, 0x50);
@@ -37,14 +38,10 @@ ZEROPAGE_DEF(unsigned char, tempChar6);
 ZEROPAGE_DEF(unsigned char, tempChar7);
 ZEROPAGE_DEF(unsigned char, tempChar8);
 ZEROPAGE_DEF(unsigned char, tempChar9);
-ZEROPAGE_DEF(unsigned char, tempChara);
 
 ZEROPAGE_DEF(int, tempInt1);
-ZEROPAGE_DEF(int, tempInt2);
+ZEROPAGE_DEF(unsigned int, tempInt2);
 ZEROPAGE_DEF(int, tempInt3);
-ZEROPAGE_DEF(int, tempInt4);
-ZEROPAGE_DEF(int, tempInt5);
-ZEROPAGE_DEF(int, tempInt6);
 
 // This can be used to convert a byte value to a bit id - just get the 
 const unsigned int bitToByte[8] = {

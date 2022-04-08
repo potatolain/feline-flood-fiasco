@@ -214,6 +214,8 @@ _introScreenEnabled:
 
 _singleLevelOverride:
     .byte $ff
+    ;.byte 14
+    ;.byte 3
 .export _singleLevelOverride: absolute
 
 _titleSong:

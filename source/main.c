@@ -79,7 +79,7 @@ void main() {
                 fade_in();
                 break;
             case GAME_STATE_TITLE_INPUT:
-                wait_for_start();
+                handle_title_input();
                 gameState = GAME_STATE_POST_TITLE;
                 break;
             case GAME_STATE_POST_TITLE:
@@ -87,7 +87,7 @@ void main() {
 
                 gameTime = frameCount;
                 gameCollectableCount = 0;
-                gameCrates = 0;
+                // gameCrates = 0;
 
                 if (singleLevelOverride != 255) {
                     currentLevelId = singleLevelOverride;
@@ -97,7 +97,7 @@ void main() {
 
                     draw_intro_screen();
                     fade_in();
-                    handle_intro_input();
+                    wait_for_start();
                 }
 
 
@@ -108,8 +108,11 @@ void main() {
             case GAME_STATE_LOAD_LEVEL_1: // Used to start music in the case above.
                 playerCollectableCount = 0;
                 playerCrateCount = 0;
-                undoPosition = 0;
+                undoNumber = 0;
+                undoArrayPosition = 0;
                 keyCount = 0;
+                waterLevel = 0;
+                runTileBatch = 1;
                 clear_undo();
                 fade_out();
                 oam_clear();
@@ -148,6 +151,7 @@ void main() {
                 update_hud();
                 handle_player_movement();
                 update_player_sprite();
+                update_water_levels();
                 break;
             case GAME_STATE_PAUSED:
                 sfx_play(SFX_MENU_OPEN, SFX_CHANNEL_4);  
@@ -180,13 +184,15 @@ void main() {
                 // Draw the "you won" screen
                 draw_win_screen();
                 fade_in();
-                wait_for_start();
+                // See comment below
+                handle_title_input();
                 fade_out();
 
-                // Folow it up with the credits.
+                // Follow it up with the credits.
                 draw_credits_screen();
                 fade_in();
-                wait_for_start();
+                // Normal wait_for_start with an extra update of the player sprite to draw it (end of compo, time to refactor limited)
+                handle_title_input();
                 fade_out();
                 reset();
                 break;

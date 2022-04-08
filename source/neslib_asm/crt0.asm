@@ -319,5 +319,5 @@ sounds_data:
 .segment "DMC"
 
 .if(FT_DPCM_ENABLE)
-	.incbin "sound/samples/samples.bin"
+	;.incbin "sound/samples/samples.bin"
 .endif

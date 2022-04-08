@@ -41,3 +41,5 @@ void update_hud();
 
 // Draw a string using hud characters...
 void put_hud_str(unsigned int adr, const char* str);
+
+void draw_oh_dang_text(void);

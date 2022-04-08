@@ -15,9 +15,13 @@
 unsigned char currentMap[120];
 unsigned char currentMapOrig[120];
 
+unsigned char floodMap[120];
+
 unsigned char assetTable[64];
 
 ZEROPAGE_DEF(unsigned char, currentGameStyle);
+ZEROPAGE_DEF(unsigned char, waterLevel);
+ZEROPAGE_DEF(unsigned char, maxWaterLevel);
 
 unsigned char mapScreenBuffer[0x5c];
 
@@ -44,20 +48,32 @@ void clear_asset_table() {
 // Loads the assets from assetTable (for the row *ending* with j) into mapScreenBuffer
 // at tempArrayIndex. 
 void load_palette_to_map_screen_buffer(int attributeTableAdr) {
-    mapScreenBuffer[tempArrayIndex++] = MSB(attributeTableAdr + j - 7) | NT_UPD_HORZ;
-    mapScreenBuffer[tempArrayIndex++] = LSB(attributeTableAdr + j - 7);
-    mapScreenBuffer[tempArrayIndex++] = 8;
+    mapScreenBuffer[tempArrayIndex] = MSB(attributeTableAdr + j - 7) | NT_UPD_HORZ;
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = LSB(attributeTableAdr + j - 7);
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = 8;
+    ++tempArrayIndex;
 
     // Using an unrolled loop to save a bit of RAM - not like we need it really.
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-7];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-6];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-5];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-4];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-3];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-2];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j-1];
-    mapScreenBuffer[tempArrayIndex++] = assetTable[j];
-    mapScreenBuffer[tempArrayIndex++] = NT_UPD_EOF;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-7];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-6];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-5];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-4];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-3];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-2];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j-1];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = assetTable[j];
+    ++tempArrayIndex;
+    mapScreenBuffer[tempArrayIndex] = NT_UPD_EOF;
+    ++tempArrayIndex;
 }
 
 // This is an ascii space
@@ -70,6 +86,133 @@ void fill_border_line() {
         mapScreenBuffer[0x24 + (j<<1) + 1] = tempChar1 + 17;
 
     }
+}
+
+ZEROPAGE_DEF(unsigned char, tempFloodTile);
+ZEROPAGE_DEF(unsigned char, tempFloodTileType);
+
+// Check to make sure we did not cross a row border - if we did, stop trying
+unsigned char gross_test(void) {
+    return (tempFloodTileType/12) == (tempFloodTile / 12);
+}
+
+void flood_tile(unsigned char tid) {
+    tempFloodTileType = tid;
+    tempFloodTile = tid - 1; 
+    if (gross_test()) {
+        if (tempFloodTile < 120) {
+            ++floodMap[tempFloodTile];
+        }
+    }
+    tempFloodTile = tid + 1;
+    if (gross_test()) {
+        if (tempFloodTile < 120) {
+            ++floodMap[tempFloodTile];
+        }
+    }
+
+    tempFloodTile = tid - 12;
+    if (tempFloodTile < 120) {
+        ++floodMap[tempFloodTile];
+    }
+    tempFloodTile = tid + 12;
+    if (tempFloodTile < 120) {
+        ++floodMap[tempFloodTile];
+    }
+}
+
+// Reverse the above
+void unflood_tile(unsigned char tid) {
+    tempFloodTileType = tid;
+    
+    tempFloodTile = tid + 12;
+    if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+        floodMap[tempFloodTile] &= 0x7f;
+        --floodMap[tempFloodTile];
+    }
+
+    tempFloodTile = tid - 12;
+    if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+        floodMap[tempFloodTile] &= 0x7f;
+        --floodMap[tempFloodTile];
+    }
+
+
+    tempFloodTile = tid + 1;
+    if (gross_test()) {
+        if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+            floodMap[tempFloodTile] &= 0x7f;
+            --floodMap[tempFloodTile];
+        }
+    }
+
+    tempFloodTile = tid - 1; 
+    if (gross_test()) {
+        if (tempFloodTile < 120 && floodMap[tempFloodTile] > 0) {
+            floodMap[tempFloodTile] &= 0x7f;
+            --floodMap[tempFloodTile];
+        }
+    }
+}
+
+
+void flood_map(void) {
+    for (i = 0; i < 120; ++i) {
+        if (currentMap[i] == GRATE_TILE || currentMap[i] == WATER_TILE) {
+            flood_tile(i);
+        }
+    }
+}
+
+void unflood_map(void) {
+    for (i = 119; i != 255; --i) {
+        if (currentMap[i] == GRATE_TILE || currentMap[i] == WATER_TILE) {
+            unflood_tile(i);
+        }
+    }
+}
+
+
+ZEROPAGE_DEF(unsigned char, hasWatered);
+ZEROPAGE_DEF(unsigned char, tilesInBatch);
+void update_flooded_tiles(void) {
+    hasWatered = 0;
+    runTileBatch = 0;
+    tilesInBatch = 0;
+    for (i = 0; i < 120; ++i) {
+        tempFloodTile = floodMap[i] & 0x7f;
+        tempFloodTileType = tileCollisionTypes[currentMap[i]];
+        if (tempFloodTileType != TILE_COLLISION_SOLID && tempFloodTileType != TILE_COLLISION_LEVEL_END) {
+            // Crates buy an extra level of safety
+            if (tempFloodTileType == TILE_COLLISION_CRATE) {
+                tempFloodTile -= 20;
+                if (tempFloodTile > 220) {
+                    tempFloodTile = 0;
+                }
+            }
+            if (tempFloodTile > maxWaterLevel && (floodMap[i] & 0x80) == 0) {
+                floodMap[i] |= 0x80;
+                ++tilesInBatch;
+                if (tilesInBatch == 3) {
+                    tilesInBatch = 0;
+                    runTileBatch = 1;
+                }
+                update_single_tile(i % 12, i / 12, WATER_TILE, tilePalettes[WATER_TILE]);
+                runTileBatch = 0;
+
+                if (currentMap[i] == CAT_TILE) {
+                    sfx_play(SFX_CAT_OHNO, SFX_CHANNEL_1);
+                    hasWatered = 1;
+                } else if (!hasWatered) {
+                    hasWatered = 1;
+                    sfx_play(SFX_WATER_SPREAD, SFX_CHANNEL_4);
+                }
+                currentMap[i] = WATER_TILE;
+            }
+        }
+    }
+    runTileBatch = 1;
+    run_tile_batch();
 }
 
 void update_asset_table_based_on_i_j() {
@@ -172,4 +315,15 @@ void draw_current_map_to_a_inline() {
 
     vram_adr(0x23c0);
     vram_write(&assetTable[0], 64);
+}
+
+void update_water_levels(void) {
+    for (i = 0; i < lastCounterSprite; ++i) {
+        if (waterLevel < maxWaterLevel) {
+            (*(unsigned char*)(0x221 + (i<<2))) = '0' + (maxWaterLevel - waterLevel) + 0x60;
+        } else {
+            (*(unsigned char*)(0x221 + (i<<2))) = 0xff;
+        }
+    }
+    oam_hide_rest(lastCounterSprite<<2);
 }

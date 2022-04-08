@@ -5,9 +5,16 @@
 #include "source/configuration/game_states.h"
 #include "source/menus/text_helpers.h"
 #include "source/map/map.h"
+#include "source/sprites/player.h"
 
 #pragma code-name ("CODE")
 #pragma rodata-name ("CODE")
+
+void draw_tempint1(void) {
+    vram_put('0' + ((tempInt1 / 100) % 10) + 0x60);
+    vram_put('0' +((tempInt1 / 10) % 10) + 0x60);
+    vram_put('0' + ((tempInt1 % 10)) + 0x60);
+}
 
 void draw_win_screen() {
     ppu_off();
@@ -17,7 +24,7 @@ void draw_win_screen() {
     // Add whatever you want here; NTADR_A just picks a position on the screen for you. Your options are 0, 0 to 32, 30
     put_str(NTADR_A(8, 5), "Congratulations!");
 
-    put_str(NTADR_A(9, 12), "You have won! ");
+    put_str(NTADR_A(9, 8), "You escaped! ");
 
     put_str(NTADR_A(5, 24), "Your time:       ");
 
@@ -38,41 +45,60 @@ void draw_win_screen() {
     vram_put('0' + screenBuffer[4] + 0x60);
 
     tempChar1 = 0;
-    switch (currentGameStyle) {
-        case GAME_STYLE_MAZE:
-            // Do nothing; nothing special to show
-            tempChar1 = 1;
-            break;
-        case GAME_STYLE_COIN:
-            put_str(NTADR_A(5, 22), coinsCollectedText);
-            tempInt1 = gameCollectableCount;
-            break;
-        case GAME_STYLE_CRATES:
-            put_str(NTADR_A(5, 22), cratesRemovedText);
-            tempInt1 = gameCrates;
-            break;
-    }
-    // NOTE: If there are space issues, we might benefit from incrementing these 
-    // "smartly" and replacing this with & 0x0f, &0xf0, (>>8)& 0x0f, etc
-    if (tempChar1 == 0) {
-        vram_put('0' + ((tempInt1 / 100) % 10) + 0x60);
-        vram_put('0' +((tempInt1 / 10) % 10) + 0x60);
-        vram_put('0' + ((tempInt1 % 10)) + 0x60);
+    put_str(NTADR_A(5, 22), coinsCollectedText);
+    // Text too long, reset address
+    vram_adr(NTADR_A(20, 22));
+    tempInt1 = gameCollectableCount;
+
+    // gameCollectableAvailableCount
+    draw_tempint1();
+    vram_put('/' + 0x60);
+    tempInt1 = TOTAL_CATS;
+    draw_tempint1();
+
+    // This is your last ending screen, unless you got all cats!
+    if (gameCollectableCount < TOTAL_CATS) {
+        put_str(NTADR_A(5, 20), "Thank you for playing!");
     }
 
     // Hide all existing sprites
     oam_clear();
-    ppu_on_all();
+    if (gameCollectableCount < TOTAL_CATS) {
+        ppu_on_all();
+        playerGridPositionX = 5;
+	    playerGridPositionY = 3;
+	    // Aim the player down to start
+	    playerSpriteTileId = 0x40;
+        playerDirection = SPRITE_DIRECTION_DOWN;
+
+        for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 3; ++j) {
+                update_single_tile(4+i, 5+j, 14, tilePalettes[14]);
+            }
+        }
+    } else {
+        ppu_on_bg();
+    }
+
 
 }
 
 void draw_credits_screen() {
+    if (gameCollectableCount < TOTAL_CATS) {
+        reset();
+    }
     ppu_off();
     scroll(0, 0);
 
 
     vram_adr(0x2000);
     vram_write(&creditsScreenData[0], 0x400);
+
+    playerGridPositionX = 6;
+	playerGridPositionY = 6;
+	// Aim the player down to start
+	playerSpriteTileId = 0x40;
+    playerDirection = SPRITE_DIRECTION_DOWN;
 
     // Hide all existing sprites
     oam_clear();

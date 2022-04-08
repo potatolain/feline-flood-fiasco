@@ -5,11 +5,10 @@
 #include "source/configuration/system_constants.h"
 #include "source/menus/text_helpers.h"
 #include "source/map/map.h"
+#include "source/sprites/player.h"
 
 #pragma code-name ("CODE")
 #pragma rodata-name ("CODE")
-
-#define selectedOption tempChara
 
 // Draws custom data from the patched area onto the screen, then moves on.
 void draw_title_screen() {
@@ -24,5 +23,24 @@ void draw_title_screen() {
 
 	ppu_on_all();
 
+	playerGridPositionX = 6;
+	playerGridPositionY = 3;
+	// Aim the player down to start
+	playerSpriteTileId = 0x40;
+
+	playerDirection = SPRITE_DIRECTION_DOWN;
+
 	gameState = GAME_STATE_TITLE_INPUT;
+}
+
+void handle_title_input(void) {
+
+	while (1) {
+		tempChar1 = pad_poll(0);
+		if (tempChar1 & PAD_START) {
+			break;
+		}
+		ppu_wait_nmi();
+		update_player_sprite();
+	}
 }
