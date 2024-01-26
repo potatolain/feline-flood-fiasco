@@ -2,7 +2,7 @@
 ;with improvements by VEG
 ;Feel free to do anything you want with this code, consider it Public Domain
 
-; NOTE: Edits by cppchriscpp: 
+; NOTE: Edits for puzzle maker: 
 ; - Added mmc1 bank swapping
 ; - Made the nmi and music_play methods support swapping to a set SOUND_BANK before reading data.
 ; - Added second split method with y split support from na_th_an's NESDev code
@@ -292,7 +292,7 @@ FamiToneSfxInit:
 	
 	ldy #0
 
-; @cppchriscpp change:
+; @igwgames change:
 ; Disable the famitracker PAL features... it has a weird bug where if I disable PAL, this var
 ; is no longer defined, and ca65 does not like that.	
 ;	.if(FT_PITCH_FIX)
@@ -981,7 +981,7 @@ _split:
 	bvc @4
 
 	; Wait a few cycles to align with the *next* line.
-	; @cppchriscpp hack
+	; @igwgames hack
 	ldx #0
 	@looper:
 		inx
@@ -1017,7 +1017,7 @@ _wait_for_sprite0_hit:
 	bvc @4
 
 	; Wait a few cycles to align with the *next* line.
-	; @cppchriscpp hack
+	; @igwgames hack
 	ldx #0
 	@looper:
 		inx

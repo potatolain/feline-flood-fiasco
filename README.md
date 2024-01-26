@@ -1,8 +1,10 @@
 # Ludum Dare 50 thing
 
-This is the future home of a Ludum Dare entry.
+This is the  home of a Ludum Dare entry. It involves cats and water and saving them.
 
-It was built largely with this: https://github.com/cppchriscpp/nes-puzzle-maker-rom
+I obviously didn't take time to fill this out, sorry!
+
+It was built largely with this: https://gh.nes.science/nes-puzzle-maker-rom
 
 Using this tool: https://puzzle.nes.science
 
